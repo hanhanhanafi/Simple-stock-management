@@ -65,7 +65,7 @@ require "cek.php";
             <div id="layoutSidenav_content">
                 <main>
                     <div class="container-fluid">
-                        <h1 class="mt-4 mb-4">Dashboard</h1>
+                        <h1 class="mt-4 mb-4">Dashboard Stock Barang</h1>
                         <div class="card mb-4">
                             <div class="card-header">
                                 <!-- Button trigger modal -->
@@ -82,17 +82,82 @@ require "cek.php";
                                                 <th>Nama Barang</ths>
                                                 <th>Deskripsi</th>
                                                 <th>Stok</th>
+                                                <th>Aksi</th>
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            <tr>
-                                                <td>Tiger Nixon</td>
-                                                <td>System Architect</td>
-                                                <td>Edinburgh</td>
-                                                <td>61</td>
-                                            </tr>
-                                        </tbody>
-                                    </table>
+                                          <?php  
+                                            $query = mysqli_query($connectdb, "SELECT * FROM stock");
+                                            $no = 1;
+                                            while ($data = mysqli_fetch_array($query)) {
+                                                $namabarang = $data["namabarang"]; 
+                                                $deskripsi = $data["deskripsi"]; 
+                                                $stock = $data["stock"];
+                                                $idbarang = $data["idbarang"];
+                                                ?>
+                                                <tr>
+                                                    <td><?= $no++ ?></td>
+                                                    <td><?= $namabarang; ?> </td>
+                                                    <td><?= $deskripsi; ?> </td>
+                                                    <td><?= $stock; ?> </td>
+                                                    <td>
+                                                    <button type="button" class="btn btn-info" data-toggle="modal" data-target="#edit<?=$idbarang;?>"> Edit </button>
+                                                    <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#hapus<?=$idbarang;?>"> Hapus </button>
+                                                    </td>
+                                                </tr>
+                                                <!-- Modal Edit Barang -->
+                                                <div class="modal fade" id="edit<?=$idbarang;?>" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+                                                <div class="modal-dialog modal-dialog-centered" role="document">
+                                                <div class="modal-content">
+                                                    <div class="modal-header">
+                                                        <h5 class="modal-title" id="exampleModalLongTitle">Edit Barang</h5>
+                                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                        <span aria-hidden="true">&times;</span>
+                                                        </button>
+                                                    </div>
+                                                    <form method="post">
+                                                    <div class="modal-body">
+                                                    <input type="text" name="namabarang" value="<?= $namabarang; ?>" class="form-control mb-3">
+                                                    <input type="text" name="deskripsi" value="<?= $deskripsi; ?>" class="form-control mb-3">
+                                                    <input type="number" name="stock" value="<?= $stock; ?>" class="form-control mb-3">
+                                                    <input type="hidden" name="idbarang" value="<?= $idbarang; ?>">
+                                                    </div>
+                                                    <div class="modal-footer">
+                                                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Keluar</button>
+                                                        <button type="submit" name="editbarang" class="btn btn-primary">Edit</button>
+                                                    </div>
+                                                    </form>
+                                                    </div>
+                                                </div>
+                                                </div>
+                                                <!-- Akhir Modal Edit Barang -->
+                                                <!-- Modal Hapus Barang -->
+                                                <div class="modal fade" id="hapus<?=$idbarang;?>" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+                                                <div class="modal-dialog modal-dialog-centered" role="document">
+                                                <div class="modal-content">
+                                                    <div class="modal-header">
+                                                        <h5 class="modal-title" id="exampleModalLongTitle">Hapus Barang</h5>
+                                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                        <span aria-hidden="true">&times;</span>
+                                                        </button>
+                                                    </div>
+                                                    <form method="post">
+                                                    <div class="modal-body">
+                                                        <p class="" >Yakin ingin menghapus <b> <?= $namabarang; ?> ? </b></p>
+                                                        <input type="hidden" name="idbarang" value="<?= $idbarang; ?>">
+                                                    </div>
+                                                    <div class="modal-footer">
+                                                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Keluar</button>
+                                                        <button type="submit" name="hapusbarang" class="btn btn-danger">Hapus</button>
+                                                    </div>
+                                                    </form>
+                                                    </div>
+                                                </div>
+                                                </div>
+                                                <!-- Akhir Modal Hapus Barang -->
+                                                <?php }; ?>
+                                            </tbody>
+                                        </table>
                                 </div>
                             </div>
                         </div>
@@ -100,6 +165,7 @@ require "cek.php";
                 </main>
                 <!-- main page -->
                 <!-- Modal -->
+                <form method="post">
                 <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
                 <div class="modal-dialog modal-dialog-centered" role="document">
                     <div class="modal-content">
@@ -116,11 +182,12 @@ require "cek.php";
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                        <button type="button" class="btn btn-primary">Save changes</button>
+                        <button type="submit" name="newbarang" class="btn btn-primary">Submit</button>
                     </div>
                     </div>
                 </div>
                 </div>
+                </form>
                 <!-- akhir main page -->
                 <footer class="py-4 bg-light mt-auto">
                     <div class="container-fluid">
