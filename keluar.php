@@ -78,32 +78,29 @@ require "cek.php";
                                     <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
                                         <thead>
                                             <tr>
-                                                <th>No</th>
-                                                <th>Nama Barang</ths>
-                                                <th>Deskripsi</th>
-                                                <th>Stok</th>
-                                                <th>Aksi</th>
+                                                <th> No </th>
+                                                <th>Tanggal</th>
+                                                <th>Nama Barang</th>
+                                                <th>Jumlah</th>
+                                                <th>Penerima</th>
                                             </tr>
                                         </thead>
                                         <tbody>
                                           <?php  
-                                            $query = mysqli_query($connectdb, "SELECT * FROM stock");
+                                            $query = mysqli_query($connectdb, "SELECT * FROM keluar k, stock s WHERE s.idbarang = k.idbarang");
                                             $no = 1;
                                             while ($data = mysqli_fetch_array($query)) {
+                                                $tanggal = $data["tanggal"];
                                                 $namabarang = $data["namabarang"]; 
-                                                $deskripsi = $data["deskripsi"]; 
-                                                $stock = $data["stock"];
-                                                $idbarang = $data["idbarang"];
+                                                $kquantity = $data["quantity"];
+                                                $penerima = $data["penerima"];
                                                 ?>
                                                 <tr>
-                                                    <td><?= $no++ ?></td>
+                                                    <td><?= $no++; ?></td>
+                                                    <td><?= $tanggal; ?> </td>
                                                     <td><?= $namabarang; ?> </td>
-                                                    <td><?= $deskripsi; ?> </td>
-                                                    <td><?= $stock; ?> </td>
-                                                    <td>
-                                                    <button type="button" class="btn btn-info" data-toggle="modal" data-target="#edit<?=$idbarang;?>"> Edit </button>
-                                                    <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#hapus<?=$idbarang;?>"> Hapus </button>
-                                                    </td>
+                                                    <td><?= $kquantity; ?> </td>
+                                                    <td><?= $penerima; ?> </td>
                                                 </tr>
                                                 <!-- Modal Edit Barang -->
                                                 <div class="modal fade" id="edit<?=$idbarang;?>" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
@@ -118,9 +115,8 @@ require "cek.php";
                                                     <form method="post">
                                                     <div class="modal-body">
                                                     <input type="text" name="namabarang" value="<?= $namabarang; ?>" class="form-control mb-3">
-                                                    <input type="text" name="deskripsi" value="<?= $deskripsi; ?>" class="form-control mb-3">
+                                                    <input type="text" name="quantity" value="<?= $quantity; ?>" class="form-control mb-3">
                                                     <input type="number" name="stock" value="<?= $stock; ?>" class="form-control mb-3">
-                                                    <input type="hidden" name="idbarang" value="<?= $idbarang; ?>">
                                                     </div>
                                                     <div class="modal-footer">
                                                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Keluar</button>
@@ -163,6 +159,42 @@ require "cek.php";
                         </div>
                     </div>
             </main>
+            <form method="post">
+                <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered" role="document">
+                    <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLongTitle">Tambah Barang Keluar</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                       <select name="barangnya" id="barangnya" class="form-control mb-3">
+                           <?php 
+                           $ambildata = mysqli_query($connectdb, "select * from stock");
+                           while($fetcharray = mysqli_fetch_array($ambildata)) {
+                            $idb = $fetcharray['idbarang'];
+                            $namab = $fetcharray['namabarang'];
+                            ?>
+
+                            <option value="<?= $idb?>" class="form-control mb-3"><?= $namab ?> </option>
+
+                           <?php 
+                           }
+                           ?>
+                       </select>
+                       <input type="number" name="qty" placeholder="Quantity" class="form-control mb-3">
+                       <input type="text" name="penerima" placeholder="Penerima Barang" class="form-control mb-3">
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        <button type="submit" name="barangkeluar" class="btn btn-primary">Submit</button>
+                    </div>
+                    </div>
+                </div>
+                </div>
+                </form>
                 <footer class="py-4 bg-light mt-auto">
                     <div class="container-fluid">
                         <div class="d-flex align-items-center justify-content-between small">
