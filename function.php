@@ -70,5 +70,29 @@ if ($inputbm&&$updatedatastock) {
 
 }
 
+// Barang Keluar
+
+if (isset($_POST['barangkeluar'])) {
+    $idba = $_POST['barangnya'];
+    $penerima = $_POST['penerima'];
+    $quantity = $_POST['qty'];
+
+    $cekstock = mysqli_query($connectdb, "select * from stock where idbarang='$idba'");
+    $getdata = mysqli_fetch_array($cekstock);
+
+    $stockbarang = $getdata['stock'];
+    $plusstockdanqty = $stockbarang - $quantity;
+
+$inputbk = mysqli_query($connectdb, "insert into keluar (idbarang, penerima, quantity) values ('$idba', '$penerima', '$quantity')");
+$updatedatastock = mysqli_query($connectdb, "update stock set stock='$plusstockdanqty' where idbarang='$idba'"); 
+if ($inputbk&&$updatedatastock) {
+    header('location:keluar.php');
+} else {
+    echo "Gagal";
+    header('location:keluar.php');
+}
+
+}
+
 
 ?>
